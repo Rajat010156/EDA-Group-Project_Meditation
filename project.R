@@ -43,24 +43,26 @@ respondents <- table(med1$gender);respondents
 
 ### Visualizatin_1 # For understanding the gender distribution of our Respondents
 
+#1
 whether <- table(med1$m_whether); whether   
 per = round((whether/nrow(med1))*100);per
 lbl = paste(names(whether), per, "%");lbl
 pie(whether, main = "Ratio of Responses" , col = c(7,8), labels =lbl)
 
-
+#2
 age <- table(med1$age); age   
 per = round((age/nrow(med1))*100);per
 lbl = paste0(names(age),' - ',per , "%");lbl
 pie(age, main = "Ratio of Responses based on age" , col = c(2,3,4,7,8), labels =lbl)
 
-
+#3
 gen <- table(med1$gender); gen 
 per = round((gen/nrow(med1))*100);per
 lbl = paste(names(gen), per, "%");lbl
 pie(gen, main = "Male and Female Percentage" , col = c(2,4,8), labels =lbl)
 
 
+#4
 ### Visualizatin_2 # For understanding the gender wise distribution of our Respondents who do meditation or not.
 med1 %>% 
     group_by(m_whether, gender) %>% 
@@ -69,15 +71,15 @@ med1 %>%
     geom_bar(stat = 'identity') + coord_flip() + 
     labs(x= "Do you Meditate" , title = "Gender Wise Distribution of Meditation")
 
-
+#5
 ### Visualization_ # Understanding the age wise count of people who do meditation or not!
 
-ggplot(data = med1,  mapping = aes(x=age,fill=m_whether))+
-  geom_bar(position="dodge")+
-  labs(x="Different age groups",y="Number of people",
-       title="Perception of People towards Meditation - Age Wise")+
-  annotate("text",x=c(1,1.8,2.2,2.8,3.2,3.8,4.2),y=c(1,41,24,11,18,1,5)+1,
-           label=c(1,41,24,11,18,1,5))
+# ggplot(data = med1,  mapping = aes(x=age,fill=m_whether))+
+#   geom_bar(position="dodge")+
+#   labs(x="Different age groups",y="Number of people",
+#        title="Perception of People towards Meditation - Age Wise")+
+#   annotate("text",x=c(1,1.8,2.2,2.8,3.2,3.8,4.2),y=c(1,41,24,11,18,1,5)+1,
+#            label=c(1,41,24,11,18,1,5))
 
 df <- med1 %>% 
     group_by(m_whether, age) %>% 
@@ -85,6 +87,8 @@ df <- med1 %>%
 PieDonut(df, aes(m_whether, age, count = count), showPieName = F,
          showRatioThreshold = 0.01, title="Perception of People towards Meditation - Age Wise")    
 
+
+#6
 ##Visualization_ ## For understanding the well being factors of respondents basis they meditate or not!
 #Stress 
 #Anger 
@@ -110,6 +114,7 @@ p11<- ggplot(data = med2, mapping = aes(x =m_whether, fill=sleep)) +      geom_b
 
 ggarrange(p9,p10,p11,common.legend = T, nrow = 1)
 
+#7
 ## most practiced  form of meditation 
 med2 %>% 
     filter(m_whether == 'Yes') %>% 
@@ -118,13 +123,15 @@ med2 %>%
     ggplot(aes(m_form, count)) + geom_bar(stat = 'identity') + coord_flip()
 
 ## Conclusion: breathwork most practised method
+# 
+# med2 %>% 
+#     filter(m_whether == 'Yes') %>% 
+#     group_by(m_form, stress) %>% 
+#     summarise(count = n()) %>% 
+#     ggplot(aes(m_form, count, fill = stress)) + geom_bar(stat = 'identity', position = 'stack') + coord_flip()
 
-med2 %>% 
-    filter(m_whether == 'Yes') %>% 
-    group_by(m_form, stress) %>% 
-    summarise(count = n()) %>% 
-    ggplot(aes(m_form, count, fill = stress)) + geom_bar(stat = 'identity', position = 'stack') + coord_flip()
 
+#8
 ### Visualization_ Respondents Experience of Meditation - Month/year!
 ##########################################################################
 med3 <- med1 %>% filter(m_whether == "Yes")
@@ -133,29 +140,13 @@ exp2 <- ggplot(data = med3)+geom_bar(aes(x=m_often,fill=age))   + my_theme + lab
 exp3 <- ggplot(data = med3)+geom_bar(aes(x=m_duration,fill=age))+ my_theme + labs(x = "", y = "m_duration", title = "") + coord_flip();exp3
 
 ggarrange(exp1,exp2,exp3,nrow=1,common.legend = T)
-   
-####Visualization_ For understanding since when people have been meditating! - 
-
-test2a <- xtabs(~m_when+stress,med2)
-test2a
-View(test2a)
-
-test2a <- as.data.frame(test2a)
-class(test2a)
-ggplot(data=test2a, mapping = aes(x=m_when, y=Freq, fill=stress)) + geom_bar(stat = "identity")
 
 
 
-####Visualization_ For understanding how often do they meditate! 
-test2 <- xtabs(~m_often+stress,med2)
-test2
-View(test2)
+# med2 %>% filter(m_whether == "No") %>% group_by(stress) %>% summarise(n())
 
-test2 <- as.data.frame(test2)
-class(test2)
-ggplot(data=test2, mapping = aes(x=m_often, y=Freq, fill=stress)) + geom_bar(stat = "identity")
-
-med2 %>% filter(m_whether == "No") %>% group_by(stress) %>% summarise(n())
+#9
+###Top 2 worst affected factors in terms of perception of people who don't meditate and comparing with the perception of people who are meditating 
 
 med2 %>% 
     filter(stress == "agree" | stress == "Strongly Agree") %>% 
@@ -212,12 +203,53 @@ med2 %>%
     group_by(m_whether, sleep) %>% 
     summarise(count = n())
 
+
 df <- data.frame(var =  names(med1)[7:17],
                  freq = c(24,11,13,9,11,17,13,7,9,10,17))
 df %>% 
     ggplot(aes(var, freq)) + 
     geom_bar(stat = 'identity', fill = "steelblue3") + coord_flip() +
     my_theme
+
+
+#10 
+### Comparing worst 2 factors - stress and sleep for people whho meditate and who don't 
+## Stress 
+st1 <- med2 %>% group_by(m_whether, stress) %>% 
+    summarise(count=n()) %>% 
+    ggplot(aes(x=m_whether, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
+
+st2 <- med2 %>% group_by(m_when, stress) %>% 
+    summarise(count=n()) %>% 
+    ggplot(aes(x=m_when, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
+
+st3 <- med2 %>% group_by(m_often, stress) %>% 
+    summarise(count=n()) %>% 
+    ggplot(aes(x=m_often, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
+
+ggarrange(st1,st2,st3, common.legend = T)
+
+
+## Sleep  
+
+sl1 <- med2 %>% group_by(m_whether, sleep) %>% 
+    summarise(count=n()) %>% 
+    ggplot(aes(x=m_whether, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
+
+sl2 <- med2 %>% group_by(m_when, sleep) %>% 
+    summarise(count=n()) %>% 
+    ggplot(aes(x=m_when, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
+
+sl3 <- med2 %>% group_by(m_often, sleep) %>% 
+    summarise(count=n()) %>% 
+    ggplot(aes(x=m_often, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
+
+ggarrange(sl1,sl2,sl3, common.legend = T)
+
+
+
+#11
+##Recommendation of People to do meditation 
 
 med2 %>% 
     filter(recommend != '') %>% 
@@ -226,44 +258,3 @@ med2 %>%
     ggplot(aes(recommend, count, fill = m_whether)) + 
     geom_bar(stat = 'identity', position = 'dodge') + 
     my_theme
-
-
-### Comparing worst 2 factors - stress and sleep for people whho meditate and who don't 
-## Stress 
-st1 <- med2 %>% group_by(m_whether, stress) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_whether, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
-
-st2 <- med2 %>% group_by(m_when, stress) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_when, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
-
-st3 <- med2 %>% group_by(m_often, stress) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_often, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
-
-ggarrange(st1,st2,st3, common.legend = T)
-
-
-## Sleep  
-
-sl1 <- med2 %>% group_by(m_whether, sleep) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_whether, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
-
-sl2 <- med2 %>% group_by(m_when, sleep) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_when, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
-
-sl3 <- med2 %>% group_by(m_often, sleep) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_often, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
-
-ggarrange(sl1,sl2,sl3, common.legend = T)
-
-
-
-
-
-
-
