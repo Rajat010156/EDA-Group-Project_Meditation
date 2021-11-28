@@ -94,7 +94,7 @@ PieDonut(df, aes(m_whether, age, count = count), showPieName = F,
 #Anger 
 #Emotional 
 #Calm
-
+med2 <- med1
 p1 <- ggplot(data = med1, mapping = aes(x =m_whether, fill=stress))   + geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Stress", fill="");p1
 p2 <- ggplot(data = med1, mapping = aes(x =m_whether, fill=anger))    + geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Anger Management", fill="");p2
 p3 <- ggplot(data = med1, mapping = aes(x =m_whether, fill=emotions)) + geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Emotional Balance", fill="");p3
@@ -116,6 +116,7 @@ ggarrange(p9,p10,p11,common.legend = T, nrow = 1)
 
 #7
 ## most practiced  form of meditation 
+
 med2 %>% 
     filter(m_whether == 'Yes') %>% 
     group_by(m_form) %>% 
@@ -247,11 +248,14 @@ sl3 <- med2 %>% group_by(m_often, sleep) %>%
 ggarrange(sl1,sl2,sl3, common.legend = T)
 
 
+
 #11 Reason for not being able to build up the habit of Mediation 
 med2 %>% filter(m_reason!= "") %>% 
-  group_by(m_reason) %>% 
-  summarise(count = n())  %>% 
-  ggplot(aes(x=m_reason, y=count)) + geom_bar(stat = 'identity') + coord_flip()
+    group_by(m_reason) %>% 
+    summarise(count = n())  %>% 
+    ggplot(aes(x=m_reason, y=count)) + geom_bar(stat = 'identity') + coord_flip()
+
+
 
 
 #12
