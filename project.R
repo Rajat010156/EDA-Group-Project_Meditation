@@ -247,8 +247,14 @@ sl3 <- med2 %>% group_by(m_often, sleep) %>%
 ggarrange(sl1,sl2,sl3, common.legend = T)
 
 
+#11 Reason for not being able to build up the habit of Mediation 
+med2 %>% filter(m_reason!= "") %>% 
+  group_by(m_reason) %>% 
+  summarise(count = n())  %>% 
+  ggplot(aes(x=m_reason, y=count)) + geom_bar(stat = 'identity') + coord_flip()
 
-#11
+
+#12
 ##Recommendation of People to do meditation 
 
 med2 %>% 
