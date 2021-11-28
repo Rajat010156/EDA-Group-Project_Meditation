@@ -226,3 +226,44 @@ med2 %>%
     ggplot(aes(recommend, count, fill = m_whether)) + 
     geom_bar(stat = 'identity', position = 'dodge') + 
     my_theme
+
+
+### Comparing worst 2 factors - stress and sleep for people whho meditate and who don't 
+## Stress 
+st1 <- med2 %>% group_by(m_whether, stress) %>% 
+  summarise(count=n()) %>% 
+  ggplot(aes(x=m_whether, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
+
+st2 <- med2 %>% group_by(m_when, stress) %>% 
+  summarise(count=n()) %>% 
+  ggplot(aes(x=m_when, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
+
+st3 <- med2 %>% group_by(m_often, stress) %>% 
+  summarise(count=n()) %>% 
+  ggplot(aes(x=m_often, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
+
+ggarrange(st1,st2,st3, common.legend = T)
+
+
+## Sleep  
+
+sl1 <- med2 %>% group_by(m_whether, sleep) %>% 
+  summarise(count=n()) %>% 
+  ggplot(aes(x=m_whether, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
+
+sl2 <- med2 %>% group_by(m_when, sleep) %>% 
+  summarise(count=n()) %>% 
+  ggplot(aes(x=m_when, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
+
+sl3 <- med2 %>% group_by(m_often, sleep) %>% 
+  summarise(count=n()) %>% 
+  ggplot(aes(x=m_often, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
+
+ggarrange(sl1,sl2,sl3, common.legend = T)
+
+
+
+
+
+
+
