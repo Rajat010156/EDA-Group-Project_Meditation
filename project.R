@@ -42,6 +42,8 @@ med1 <- med %>%
 med1 %>% glimpse()
 respondents <- table(med1$gender);respondents   
 
+
+
 ### Visualizatin_1 # For understanding the gender distribution of our Respondents
 ## 1
 pd1 <- med1 %>% 
@@ -101,7 +103,7 @@ g1 <- med1 %>%
   group_by(m_whether, gender) %>% 
   summarise(count = n()) %>% 
   ggplot(aes(x=m_whether, y = count, fill=gender)) +
-  geom_bar(stat = 'identity',position ="dodge") +  
+  geom_bar(stat = 'identity',position ="dodge") +scale_fill_manual(values = c("black","grey","blue"))+  
   geom_text(aes(y=count+1,label = count), position = position_dodge(0.9))+
   labs(x= "Do you Meditate" , title = "Gender Wise Distribution of Meditation")+
   my_theme
@@ -111,7 +113,7 @@ print(g1+labs(fill="Gender"))
 
 ## 5
 g2 <- ggplot(data = med1,  mapping = aes(x=age,fill=m_whether))+
-    geom_bar(position="dodge",col)+
+    geom_bar(position="dodge")+scale_fill_manual(values=c("#054C70","#05C3DE"))+
     labs(x="Different age groups",y="Number of people",
        title="Perception of People towards Meditation - Age Wise")+
   annotate("text",x=c(1,1.8,2.2,2.8,3.2,3.8,4.2),y=c(1,41,24,11,18,1,5)+1,
@@ -131,133 +133,141 @@ print(g2+labs(fill="Do You Meditate"))
 #Calm
 med2 <- med1 
 str(med2)
-View(med2)
 
+
+unique(med2$m_when)
+levels(med2$m_when) <- c("Less than 3 months",
+                         "More than 1 year",                          
+                         "Don't meditate",                             
+                         "3 to 6 months", 
+                         "6 months to 1 year")
+
+
+unique(med2$m_duration)
+med2$m_duration <- recode_factor(med2$m_duration,
+                `More than 15 minutes but less than 30 minutes` ="15 to 30 minutes", 
+                `More than 30 minutes but less than 45 minutes` = "30 to 45 minutes")
+levels(med2$m_duration)
+
+View(med2)
 
 ## 6
 meds1 <- xtabs(~m_whether+stress,med2)
 meds1
-View(meds1)
 meds1 <- as.data.frame(meds1)
 
 p1 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=stress)) +
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Stress", fill="")+  
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Stress", fill="")+  
   geom_text(meds1,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p1
 
 meds2 <- xtabs(~m_whether+anger,med2)
 meds2
-View(meds2)
 meds2 <- as.data.frame(meds2)
 
 p2 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=anger)) + 
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Anger Management",fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Anger Management",fill="")+
   geom_text(meds2,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p2
 
 meds3 <- xtabs(~m_whether+emotions,med2)
 meds3
-View(meds3)
 meds3 <- as.data.frame(meds3)
 
 p3 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=emotions)) +
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Emotional Balance", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Emotional Balance", fill="")+
   geom_text(meds3,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p3
 
 meds4 <- xtabs(~m_whether+calm,med2)
 meds4
-View(meds4)
 meds4 <- as.data.frame(meds4)
 
 p4 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=calm)) +
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Calmness", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Calmness", fill="")+
   geom_text(meds4,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p4
 
 
-ggarrange(p1,p2,p3,p4,common.legend = T, nrow = 1)
+t1 <- ggarrange(p1,p2,p3,p4,common.legend = T, nrow = 1)
+annotate_figure(t1,top = text_grob("Perception Of People Towards Well-Being Factors"))        
 
 
 meds5 <- xtabs(~m_whether+confidence,med2)
 meds5
-View(meds5)
 meds5 <- as.data.frame(meds5)
 
 p5 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=confidence)) + 
-  geom_bar(width = 0.5) + my_theme + labs(x= "" ,  title = "Confidence", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate" ,  title = "Confidence", fill="")+
   geom_text(meds5,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p5
 
 meds6 <- xtabs(~m_whether+health,med2)
 meds6
-View(meds6)
 meds6 <- as.data.frame(meds6)
 
 p6 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=health)) + 
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Health", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Health", fill="")+
   geom_text(meds6,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p6
 
 
 meds7 <- xtabs(~m_whether+clarity,med2)
 meds7
-View(meds7)
 meds7 <- as.data.frame(meds7)
 
 p7 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=clarity)) +
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Clarity", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Clarity", fill="")+
   geom_text(meds7,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p7
 
 
 meds8 <- xtabs(~m_whether+energy,med2)
 meds8
-View(meds8)
 meds8 <- as.data.frame(meds8)
 
 p8 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=energy)) +
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Energy", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Energy", fill="")+
   geom_text(meds8,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p8
 
 
-ggarrange(p5,p6,p7,p8,common.legend = T, nrow = 1)
+t2 <- ggarrange(p5,p6,p7,p8,common.legend = T, nrow = 1)
+annotate_figure(t2,top = text_grob("Perception Of People Towards Well-Being Factors"))
+
 
 
 meds9 <- xtabs(~m_whether+motivation,med2)
 meds9
-View(meds9)
 meds9 <- as.data.frame(meds9)
 
 p9 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=motivation)) +
-  geom_bar(width = 0.5) + my_theme + labs(x= "" ,  title = "Motivation", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate" ,  title = "Motivation", fill="")+
   geom_text(meds9,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p9
 
 
 meds10 <- xtabs(~m_whether+focus,med2)
 meds10
-View(meds10)
 meds10 <- as.data.frame(meds10)
 
 p10 <- ggplot(data = med2, mapping = aes(x =m_whether, fill=focus)) +
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Focus", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Focus", fill="")+
   geom_text(meds10,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p10
 
 meds11 <- xtabs(~m_whether+sleep,med2)
 meds11
-View(meds11)
 meds11 <- as.data.frame(meds11)
 
 p11<- ggplot(data = med2, mapping = aes(x =m_whether, fill=sleep)) +
-  geom_bar(width = 0.5) + my_theme + labs(x= "", title = "Sleep", fill="")+
+  geom_bar(width = 0.5) + my_theme + labs(x= "Do You Meditate", title = "Sleep", fill="")+
   geom_text(meds11,mapping = aes(y=Freq,label= Freq), stat="identity",
             position = "stack",vjust=1);p11
 
 
-ggarrange(p9,p10,p11,common.legend = T, nrow = 1)
+t3 <- ggarrange(p9,p10,p11,common.legend = T, nrow = 1)
+annotate_figure(t3,top = text_grob("Perception Of People Towards Well-Being Factors"))
 
 
 ## most practiced  form of meditation 
@@ -291,7 +301,7 @@ ggplot(df, aes(m_form, freq))+geom_bar(stat = 'identity', fill = "tomato4")+
 ##########################################################################
 
 ## 8
-med3 <- med1 %>% filter(m_whether == "Yes")
+med3 <- med2 %>% filter(m_whether == "Yes")
 
 exp1 <- med3 %>% 
   group_by(m_when, age) %>% 
@@ -299,6 +309,7 @@ exp1 <- med3 %>%
 
 e1 <- ggplot(exp1, aes(m_when, count, fill = age)) + geom_bar(stat = 'identity', position = "dodge") +
   geom_text(aes(y=count+0.3,label = count), position = position_dodge(0.9))+
+  scale_fill_manual(values = c("#fcb103","blue","green","red"))+
   labs(x="Experience")+my_theme+theme(axis.text.x = element_text(angle = 90))
 print(e1+labs(fill="Age"))
 
@@ -308,6 +319,7 @@ exp2 <- med3 %>%
 
 e2 <- ggplot(exp2, aes(m_often, count, fill = age)) + geom_bar(stat = 'identity', position = "dodge") +
   geom_text(aes(y=count+0.3,label = count), position = position_dodge(0.9))+
+  scale_fill_manual(values = c("#fcb103","blue","green","red"))+
   labs(x="Frequency in a Week")+my_theme+theme(axis.text.x = element_text(angle = 90))
 print(e2+labs(fill="Age"))
 
@@ -317,6 +329,7 @@ exp3 <- med3 %>%
 
 e3 <- ggplot(exp3, aes(m_duration, count, fill = age)) + geom_bar(stat = 'identity', position = "dodge") +
   geom_text(aes(y=count+0.5,label = count), position = position_dodge(0.9))+
+  scale_fill_manual(values = c("#fcb103","blue","green","red"))+
   labs(x="Time spent on meditation in a day")+my_theme+theme(axis.text.x = element_text(angle = 90))
 print(e3+labs(fill="Age"))
 
@@ -331,7 +344,8 @@ View(test2a)
 
 test2a <- as.data.frame(test2a)
 class(test2a)
-ggplot(data=test2a, mapping = aes(x=m_when, y=Freq, fill=stress)) + geom_bar(stat = "identity")
+ggplot(data=test2a, mapping = aes(x=m_when, y=Freq, fill=stress)) +
+  geom_bar(stat = "identity")
 
 
 
@@ -342,7 +356,8 @@ View(test2)
 
 test2 <- as.data.frame(test2)
 class(test2)
-ggplot(data=test2, mapping = aes(x=m_often, y=Freq, fill=stress)) + geom_bar(stat = "identity")
+ggplot(data=test2, mapping = aes(x=m_often, y=Freq, fill=stress)) + 
+  geom_bar(stat = "identity")
 
 med2 %>% filter(m_whether == "No") %>% group_by(stress) %>% summarise(n())
 
@@ -422,7 +437,7 @@ df %>%
 st1 <- med2 %>% group_by(m_whether, stress) %>% 
   summarise(count=n()) %>% 
   ggplot(aes(x=m_whether, y = count, fill = stress)) +
-  geom_bar(stat='identity', position = 'dodge')+coord_polar();st1
+  geom_bar(stat='identity', position = 'stack')+coord_polar();st1
 
 st2 <- med2 %>% group_by(m_when, stress) %>% 
   summarise(count=n()) %>% 
@@ -431,7 +446,8 @@ st2 <- med2 %>% group_by(m_when, stress) %>%
 
 st3 <- med2 %>% group_by(m_often, stress) %>% 
   summarise(count=n()) %>% 
-  ggplot(aes(x=m_often, y = count, fill = stress)) + geom_bar(stat='identity', position = 'stack')
+  ggplot(aes(x=m_often, y = count, fill = stress)) +
+  geom_bar(stat='identity', position = 'stack')+coord_polar();st3
 
 ggarrange(st1,st2,st3, common.legend = T)
 
@@ -488,20 +504,6 @@ r1 <- med2 %>%
 print(r1+labs(fill="Do you Meditate"))
 
 
-
-### Changing the levels of m_when and m_duration
-med2
-unique(med2$m_when)
-med2$m_when <- recode_factor(med2$m_when,  `More than 3 months but less than 6 months` ="3 to 6 months", 
-                             `More than 6 months but less than 1 year` = "6 months to 1 year" )
-levels(med2$m_when)
-
-unique(med2$m_duration)
-
-
-med2$m_duration <- recode_factor(med2$m_duration,  `More than 15 minutes but less than 30 minutes` ="15 to 30 minutes", 
-                             `More than 30 minutes but less than 45 minutes` = "30 to 45 minutes")
-levels(med2$m_duration)
 
 
 
