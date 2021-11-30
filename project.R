@@ -3,8 +3,8 @@
 ##  (Assessing the Perception of People towards Meditative Practices in our Society)
 ##                BY:
 ##                  1. Arnab Dutta Choudhury
-##                  2. Rajat Gaur
-##                  3. S. Aravind
+##                  2. S. Aravind
+##                  3. Rajat Gaur
 
 ################################################################################
 # Cleaning environment
