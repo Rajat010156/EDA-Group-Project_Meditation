@@ -310,7 +310,8 @@ exp1 <- med3 %>%
 e1 <- ggplot(exp1, aes(m_when, count, fill = age)) + geom_bar(stat = 'identity', position = "dodge") +
   geom_text(aes(y=count+0.3,label = count), position = position_dodge(0.9))+
   scale_fill_manual(values = c("#fcb103","blue","green","red"))+
-  labs(x="Experience")+my_theme+theme(axis.text.x = element_text(angle = 90))
+  labs(x="Time(in months/year)",title="Experience in Meditation(Month/Year-wise)")+
+  my_theme
 print(e1+labs(fill="Age"))
 
 exp2 <- med3 %>% 
@@ -320,7 +321,7 @@ exp2 <- med3 %>%
 e2 <- ggplot(exp2, aes(m_often, count, fill = age)) + geom_bar(stat = 'identity', position = "dodge") +
   geom_text(aes(y=count+0.3,label = count), position = position_dodge(0.9))+
   scale_fill_manual(values = c("#fcb103","blue","green","red"))+
-  labs(x="Frequency in a Week")+my_theme+theme(axis.text.x = element_text(angle = 90))
+  labs(x="Time(in weeks)",title = "Frequency in a Week")+my_theme
 print(e2+labs(fill="Age"))
 
 exp3 <- med3 %>% 
@@ -330,7 +331,7 @@ exp3 <- med3 %>%
 e3 <- ggplot(exp3, aes(m_duration, count, fill = age)) + geom_bar(stat = 'identity', position = "dodge") +
   geom_text(aes(y=count+0.5,label = count), position = position_dodge(0.9))+
   scale_fill_manual(values = c("#fcb103","blue","green","red"))+
-  labs(x="Time spent on meditation in a day")+my_theme+theme(axis.text.x = element_text(angle = 90))
+  labs(x="Time(per day)",title="Daily Frequency")+my_theme
 print(e3+labs(fill="Age"))
 
 
@@ -350,14 +351,14 @@ ggplot(data=test2a, mapping = aes(x=m_when, y=Freq, fill=stress)) +
 
 
 ####Visualization_ For understanding how often do they meditate! 
-test2 <- xtabs(~m_often+stress,med2)
-test2
-View(test2)
-
-test2 <- as.data.frame(test2)
-class(test2)
-ggplot(data=test2, mapping = aes(x=m_often, y=Freq, fill=stress)) + 
-  geom_bar(stat = "identity")
+#test2 <- xtabs(~m_often+stress,med2)
+# test2
+# View(test2)
+# 
+# test2 <- as.data.frame(test2)
+# class(test2)
+# ggplot(data=test2, mapping = aes(x=m_often, y=Freq, fill=stress)) + 
+#   geom_bar(stat = "identity")
 
 med2 %>% filter(m_whether == "No") %>% group_by(stress) %>% summarise(n())
 
@@ -433,50 +434,51 @@ df %>%
 
 
 ### Comparing worst 2 factors - stress and sleep for people who meditate and who don't 
+
+
+## 10
+
 ## Stress 
 st1 <- med2 %>% group_by(m_whether, stress) %>% 
   summarise(count=n()) %>% 
   ggplot(aes(x=m_whether, y = count, fill = stress)) +
-  geom_bar(stat='identity', position = 'stack')+coord_polar();st1
-
-st2 <- med2 %>% group_by(m_when, stress) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_when, y = count, fill = stress)) +
-  geom_bar(stat='identity', position = 'stack')+coord_polar();st2
-
-st3 <- med2 %>% group_by(m_often, stress) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_often, y = count, fill = stress)) +
-  geom_bar(stat='identity', position = 'stack')+coord_polar();st3
-
-ggarrange(st1,st2,st3, common.legend = T)
+  geom_bar(stat='identity', position = 'dodge')+
+  geom_text(aes(y=count+0.5,label = count), position = position_dodge(0.9))+
+  labs(x="Do You Meditate",title="            Meditators VS Non-Meditators\n                     On Basis of Stress")+
+  coord_polar();st1
 
 
 ## Sleep  
 
-sl1 <- med2 %>% group_by(m_whether, sleep) %>% 
+s1 <- med2 %>% group_by(m_whether, sleep) %>% 
   summarise(count=n()) %>% 
-  ggplot(aes(x=m_whether, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
+  ggplot(aes(x=m_whether, y = count, fill = sleep)) +
+  geom_bar(stat='identity', position = 'dodge')+
+  geom_text(aes(y=count+0.5,label = count), position = position_dodge(0.9))+
+  labs(x="Do You Meditate",title="            Meditators VS Non-Meditators\n                     On Basis of Sleep")+
+  coord_polar();s1
 
-sl2 <- med2 %>% group_by(m_when, sleep) %>% 
+
+##
+
+h1 <- med2 %>% group_by(m_whether, health) %>% 
   summarise(count=n()) %>% 
-  ggplot(aes(x=m_when, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
+  ggplot(aes(x=m_whether, y = count, fill = health)) +
+  geom_bar(stat='identity', position = 'dodge')+
+  geom_text(aes(y=count+0.5,label = count), position = position_dodge(0.9))+
+  labs(x="Do You Meditate",title="            Meditators VS Non-Meditators\n                     On Basis of Health")+
+  coord_polar();h1
 
-sl3 <- med2 %>% group_by(m_often, sleep) %>% 
-  summarise(count=n()) %>% 
-  ggplot(aes(x=m_often, y = count, fill = sleep)) + geom_bar(stat='identity', position = 'stack')
 
-ggarrange(sl1,sl2,sl3, common.legend = T)
 
-#11 Reason for not being able to build up the habit of Mediation 
-med2 %>% filter(m_reason!= "") %>% 
-  group_by(m_reason) %>% 
-  summarise(count = n())  %>% 
-  ggplot(aes(x=m_reason, y=count)) + geom_bar(stat = 'identity') + coord_flip()
+
+
+## 11 
+#Reason for not being able to build up the habit of Mediation 
 
 m_reason <- c("Lack of spare time","Lack of concentration","Don't believe in meditation",
-              "Lack of consistency","Also the lack of awareness, guidance, & knowledge",
-              "I have never thought about doing meditation")
+              "Lack of consistency","Also the lack of awareness,\n guidance, & knowledge",
+              "I have never thought\n about doing meditation")
 freq <- rep(0,6)
 freq[1] <- length(grep("Lack of spare time", med2$m_reason))
 freq[2] <- length(grep("Lack of concentration", med2$m_reason))
@@ -489,8 +491,8 @@ ggplot(df, aes(m_reason, freq))+geom_bar(stat = 'identity', fill = "tomato2")+
   coord_flip() + labs(x="Reasons",y="Frequency",title="Reasons for not meditating")+
   my_theme
 
-#12
-##Recommendation of People to do meditation 
+## 12
+#Recommendation of People to do meditation 
 
 r1 <- med2 %>% 
   filter(recommend != '') %>% 
