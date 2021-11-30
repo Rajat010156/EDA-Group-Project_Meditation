@@ -489,6 +489,20 @@ print(r1+labs(fill="Do you Meditate"))
 
 
 
+### Changing the levels of m_when and m_duration
+med2
+unique(med2$m_when)
+med2$m_when <- recode_factor(med2$m_when,  `More than 3 months but less than 6 months` ="3 to 6 months", 
+                             `More than 6 months but less than 1 year` = "6 months to 1 year" )
+levels(med2$m_when)
+
+unique(med2$m_duration)
+
+
+med2$m_duration <- recode_factor(med2$m_duration,  `More than 15 minutes but less than 30 minutes` ="15 to 30 minutes", 
+                             `More than 30 minutes but less than 45 minutes` = "30 to 45 minutes")
+levels(med2$m_duration)
+
 
 
 
